@@ -48,6 +48,10 @@ gradle-app.setting
 .idea/**/dictionaries
 .idea/**/shelf
 
+# Just get rid of the whole thing
+.idea/*
+.gradle/*
+
 # AWS User-specific
 .idea/**/aws.xml
 
