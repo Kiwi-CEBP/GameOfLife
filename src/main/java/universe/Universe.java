@@ -7,6 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 public class Universe {
-    Map<List<Integer>, Cell> cells;
-    List<Animal> animals;
+    private Map<List<Integer>, Cell> cells;
+    private List<Animal> animals;
+
+    public Map<List<Integer>, Cell> getCells() {
+        return cells;
+    }
+
+    public List<Animal> getAnimals() {
+        return animals;
+    }
 }
