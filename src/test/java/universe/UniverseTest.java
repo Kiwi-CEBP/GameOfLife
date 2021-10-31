@@ -3,6 +3,8 @@ package universe;
 import animal.Animal;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import universe.Universe;
 
 import java.util.ArrayList;
@@ -35,7 +37,12 @@ public class UniverseTest {
         List<Animal> mockAnimalList = new ArrayList<>();
         for (int i = 0; i < animalNr; i++) {
             Animal mockAnimal = mock(Animal.class);
-            when(mockAnimal.live()).then(universe.removeAnimal(mockAnimal));
+            doAnswer(new Answer() {
+                public Object answer(InvocationOnMock invocation) {
+                    universe.removeAnimal(mockAnimal);
+                    return null;
+                }
+            }).when(mockAnimal).live();
 
             mockAnimalList.add(mockAnimal);
         }
