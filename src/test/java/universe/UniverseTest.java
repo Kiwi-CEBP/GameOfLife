@@ -16,7 +16,7 @@ public class UniverseTest {
 
     @Test
     public void testPlayTheGame() {
-        List<Animal> mockAnimalList = generateMockAnimalList(7)
+        List<Animal> mockAnimalList = generateMockAnimalList(7);
         Universe universe = new Universe (new HashMap<>(), mockAnimalList);
         universe.playTheGame();
 
