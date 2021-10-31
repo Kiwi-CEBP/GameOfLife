@@ -10,6 +10,12 @@ public class Universe {
     private Map<List<Integer>, Cell> cells;
     private List<Animal> animals;
 
+    public Universe (int cellHeight, int cellWidth,
+                     int sexualAnimalNr, int asexualAnimalNr,
+                     int foodNr){
+
+    }
+
     public Map<List<Integer>, Cell> getCells() {
         return cells;
     }
