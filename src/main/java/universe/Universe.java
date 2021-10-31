@@ -1,4 +1,4 @@
-package univers;
+package universe;
 
 import animal.Animal;
 import cell.Cell;
@@ -8,15 +8,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Univers {
+public class Universe {
     private Map<List<Integer>, Cell> cells = new HashMap<>();
     private List<Animal> animals = new ArrayList<>();
 
-    public Univers(Map<List<Integer>, Cell> cells,
-                   List<Animal> animals) {
+    public Universe(Map<List<Integer>, Cell> cells,
+                    List<Animal> animals) {
         this.cells = cells;
         this.animals = animals;
 
+    }
+
+    public void addAnimal (Animal animal) {
+        animals.add(animal);
+    }
+
+    public void removeAnimal (Animal animal) {
+        animals.remove(animal);
     }
 
     public Map<List<Integer>, Cell> getCells() {
