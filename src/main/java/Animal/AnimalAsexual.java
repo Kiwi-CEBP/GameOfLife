@@ -1,3 +1,8 @@
+package Animal;
+
+import Cell.Cell;
+import Universe.Universe;
+
 import java.util.List;
 
 public class AnimalAsexual extends Animal{
