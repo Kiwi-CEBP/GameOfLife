@@ -9,6 +9,8 @@ public abstract class Animal {
     private static final int TIME_UNTIL_STARVE_TO_DEATH = 10;
     private static final int TIME_TO_REMAIN_FULL = 4;
     private static final int MIN_GROWTH_UNTIL_REPRODUCE = 10;
+    private static final int MAX_FOOD_TO_PLACE = 5;
+    private static final int MIN_FOOD_TO_PLACE = 1;
 
     protected Universe universe;
     private Cell occupiedCell;
@@ -66,7 +68,7 @@ public abstract class Animal {
     }
 
     private void die(){
-        int foodToPlace = ThreadLocalRandom.current().nextInt(1, 5 + 1);
+        int foodToPlace = ThreadLocalRandom.current().nextInt(MIN_FOOD_TO_PLACE, MAX_FOOD_TO_PLACE + 1);
 
         occupiedCell.placeFood();
 
@@ -77,26 +79,28 @@ public abstract class Animal {
                 foodToPlace--;
         }
         occupiedCell.freeCell();
+        universe.removeAnimal(this);
     }
-    
+
     public boolean reproduce(){
         return false;
     }
 
     public void live(){
-        while(alive){
-            timeFull--;
-            move();
-            eat();
-            if(timeFull <= 0 )
-                timeUntilStarve--;
-            if(growth>= MIN_GROWTH_UNTIL_REPRODUCE) {
-                reproduce();
-            }
-            if(timeUntilStarve == 0){
-                alive = false;
-            }
+        timeFull--;
+        move();
+        eat();
+        if(timeFull <= 0 )
+            timeUntilStarve--;
+        if(growth>= MIN_GROWTH_UNTIL_REPRODUCE) {
+            reproduce();
         }
-        die();
+        if(timeUntilStarve == 0){
+            alive = false;
+        }
+
+        if(!alive) {
+            die();
+        }
     }
 }

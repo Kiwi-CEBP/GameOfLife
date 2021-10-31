@@ -23,7 +23,9 @@ public class AnimalSexual extends Animal{
         List<Cell> emptyCell = getListOfEmptyNeighbors();
         for(Cell c : emptyCell){
             if (c.occupyCell(this)){
-                return new AnimalSexual(universe, c);
+                Animal newAnimal = new AnimalSexual(universe, c);
+                universe.addAnimal(newAnimal);
+                return newAnimal;
             }
         }
         return null;
