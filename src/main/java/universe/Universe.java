@@ -3,25 +3,34 @@ package universe;
 import animal.Animal;
 import cell.Cell;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Universe {
     private Map<List<Integer>, Cell> cells = new HashMap<>();
     private List<Animal> animals = new ArrayList<>();
+    private int maxTurns = 100;
 
-    public Universe(Map<List<Integer>, Cell> cells,
-                    List<Animal> animals) {
+    public Universe() {
+    }
+
+    public Universe(int maxTurns) {
+        this.maxTurns = maxTurns;
+    }
+
+    public void setCells (Map<List<Integer>, Cell> cells) {
         this.cells = cells;
-        this.animals = animals;
+    }
 
+    public void setAnimals(List<Animal> animals) {
+        this.animals = animals;
     }
 
     public void playTheGame() {
-        for (Animal animal : animals) {
-            animal.live();
+        while((animals.size() > 0) && (maxTurns > 0)) {
+            for (Animal animal : animals) {
+                animal.live();
+            }
+            maxTurns--;
         }
     }
 
