@@ -19,6 +19,12 @@ public class Universe {
 
     }
 
+    public void playTheGame() {
+        for (Animal animal : animals) {
+            animal.live();
+        }
+    }
+
     public void addAnimal (Animal animal) {
         animals.add(animal);
     }

@@ -10,15 +10,19 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class UniverseTest {
 
     @Test
-    public void testUniverseAnimalCreation() {
-        Universe universe = new Universe(new HashMap<>(), generateMockAnimalList(7));
-        List<Animal> animals = universe.getAnimals();
-        assertEquals(7, animals.size());
+    public void testPlayTheGame() {
+        List<Animal> mockAnimalList = generateMockAnimalList(7)
+        Universe universe = new Universe (new HashMap<>(), mockAnimalList);
+        universe.playTheGame();
+
+        for (Animal animal : mockAnimalList) {
+            verify(animal, atLeast(1)).live();
+        }
     }
 
 
