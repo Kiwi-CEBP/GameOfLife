@@ -1,5 +1,5 @@
-package Cell;
-import Animal.*;
+package cell;
+import animal.*;
 import java.util.List;
 import java.util.Map;
 

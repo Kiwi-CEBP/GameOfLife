@@ -1,6 +1,6 @@
-package Universe;
+package universe;
 
-import Animal.*;
+import animal.*;
 
 public class Universe {
 

@@ -1,7 +1,7 @@
-package Animal;
+package animal;
 
-import Cell.Cell;
-import Universe.Universe;
+import cell.Cell;
+import universe.Universe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
