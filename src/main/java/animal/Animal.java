@@ -34,21 +34,21 @@ public abstract class Animal {
     }
 
     public void live(){
-        timeFull--;
-        move();
-        eat();
-        if(timeFull <= 0 )
-            timeUntilStarve--;
-        if(growth>= MIN_GROWTH_UNTIL_REPRODUCE) {
-            reproduce();
-        }
-        if(timeUntilStarve == 0){
-            alive = false;
+        while(alive) {
+            timeFull--;
+            move();
+            eat();
+            if (timeFull <= 0)
+                timeUntilStarve--;
+            if (growth >= MIN_GROWTH_UNTIL_REPRODUCE) {
+                reproduce();
+            }
+            if (timeUntilStarve == 0) {
+                alive = false;
+            }
         }
 
-        if(!alive) {
-            die();
-        }
+        die();
     }
 
     private boolean move(){
