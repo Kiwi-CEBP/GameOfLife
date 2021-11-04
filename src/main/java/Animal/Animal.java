@@ -33,12 +33,26 @@ public abstract class Animal {
         neighbourCells =  occupiedCell.getNeighbours();
     }
 
-    public boolean isLookingForPartner(){
-        return lookingForPartner;
+    public void live(){
+        timeFull--;
+        move();
+        eat();
+        if(timeFull <= 0 )
+            timeUntilStarve--;
+        if(growth>= MIN_GROWTH_UNTIL_REPRODUCE) {
+            reproduce();
+        }
+        if(timeUntilStarve == 0){
+            alive = false;
+        }
+
+        if(!alive) {
+            die();
+        }
     }
 
     private boolean move(){
-        List<Cell> emptyCells = getListOfEmptyNeighbors();
+        List<Cell> emptyCells = getListOfEmptyNeighbours();
         for (Cell c : emptyCells) {
             if (c.occupyCell(this)){
                 occupiedCell = c;
@@ -49,7 +63,7 @@ public abstract class Animal {
         return false;
     }
 
-    protected List<Cell> getListOfEmptyNeighbors(){
+    protected List<Cell> getListOfEmptyNeighbours(){
         List<Cell> emptyCell = new ArrayList<Cell>();
         Iterator<Map.Entry<List<Integer>,Cell>> itr = neighbourCells.entrySet().iterator();
         while(itr.hasNext()) {
@@ -72,6 +86,14 @@ public abstract class Animal {
         }
     }
 
+    public boolean reproduce(){
+        return false;
+    }
+
+    public boolean isLookingForPartner(){
+        return lookingForPartner;
+    }
+
     private void die(){
         int foodToPlace = ThreadLocalRandom.current().nextInt(MIN_FOOD_TO_PLACE, MAX_FOOD_TO_PLACE + 1);
 
@@ -87,25 +109,5 @@ public abstract class Animal {
         universe.removeAnimal(this);
     }
 
-    public boolean reproduce(){
-        return false;
-    }
 
-    public void live(){
-        timeFull--;
-        move();
-        eat();
-        if(timeFull <= 0 )
-            timeUntilStarve--;
-        if(growth>= MIN_GROWTH_UNTIL_REPRODUCE) {
-            reproduce();
-        }
-        if(timeUntilStarve == 0){
-            alive = false;
-        }
-
-        if(!alive) {
-            die();
-        }
-    }
 }

@@ -13,6 +13,10 @@ public class AnimalSexual extends Animal{
         super(universe, cell);
     }
 
+    public boolean reproduce(){
+        return findPartnerAndMate();
+    }
+
     public boolean isLookingForPartner(){
         if(super.isLookingForPartner()){
             giveBirth();
@@ -21,14 +25,14 @@ public class AnimalSexual extends Animal{
         return false;
     }
 
-    private Animal giveBirth(){
+    private AnimalSexual giveBirth(){
         growth = 0;
         lookingForPartner = false;
 
-        List<Cell> emptyCell = getListOfEmptyNeighbors();
+        List<Cell> emptyCell = getListOfEmptyNeighbours();
         for(Cell c : emptyCell){
             if (c.occupyCell(this)){
-                Animal newAnimal = new AnimalSexual(universe, c);
+                AnimalSexual newAnimal = new AnimalSexual(universe, c);
                 universe.addAnimal(newAnimal);
                 return newAnimal;
             }
@@ -36,36 +40,28 @@ public class AnimalSexual extends Animal{
         return null;
     }
 
-    protected List<Animal> getListOfAnimalNeighbors(){
-        List<Animal> animalList = new ArrayList<Animal>();
+    private List<AnimalSexual> getListOfAnimalNeighbors(){
+        List<AnimalSexual> animalList = new ArrayList<AnimalSexual>();
         Iterator<Map.Entry<List<Integer>,Cell>> itr = neighbourCells.entrySet().iterator();
         while(itr.hasNext()) {
             Map.Entry<List<Integer>,Cell> entry = itr.next();
             if(!entry.getValue().isEmpty())
                 if(entry.getValue().getPresentAnimal() instanceof AnimalSexual)
-                    animalList.add(entry.getValue().getPresentAnimal());
+                    animalList.add((AnimalSexual) entry.getValue().getPresentAnimal());
         }
         return animalList;
     }
 
-    public boolean findPartnerAndMate(){
-        List<Animal> animals = getListOfAnimalNeighbors();
-        for (Animal a : animals) {
+    private boolean findPartnerAndMate(){
+        List<AnimalSexual> animals = getListOfAnimalNeighbors();
+        for (AnimalSexual a : animals) {
             if (a.isLookingForPartner()){
                 a.reproduce();
-                Animal child = giveBirth();
+                AnimalSexual child = giveBirth();
                 if (child != null)
                     return true;
             }
         }
         return false;
     }
-
-    public boolean reproduce(){
-        this.reproduce();
-        return findPartnerAndMate();
-    }
-
-
-
 }
