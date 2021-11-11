@@ -14,7 +14,7 @@ public class AnimalTest {
     AnimalAsexual aa;
 
 
-    @Before
+    /*@Before
     public void setUp() {
         Universe universe= new Universe();
         Cell cell = new Cell();
@@ -47,5 +47,5 @@ public class AnimalTest {
         assertFalse(aa.isLookingForPartner());
         assertNotNull(as1.isLookingForPartner());
         assertNotNull(as2.isLookingForPartner());
-    }
+    }*/
 }
