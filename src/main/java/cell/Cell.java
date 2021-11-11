@@ -5,31 +5,31 @@ import java.util.Map;
 
 public class Cell {
 
-    public boolean giveFood(){
+    public boolean giveFood() {
         return true;
     }
 
-    public boolean placeFood(){
+    public boolean placeFood() {
         return true;
     }
 
-    public Map<List<Integer>,Cell> getNeighbours(){
+    public Map<List<Integer>, Cell> getNeighbours() {
         return null;
     }
 
-    public List<Integer> getCoordinates(){
+    public List<Integer> getCoordinates() {
         return null;
     }
 
-    public Animal getPresentAnimal(){
+    public Animal getPresentAnimal() {
         return null;
     }
 
-    public boolean occupyCell(Animal animal){
+    public boolean occupyCell(Animal animal) {
         return true;
     }
 
-    public boolean freeCell(){
+    public boolean freeCell() {
         return true;
     }
 
