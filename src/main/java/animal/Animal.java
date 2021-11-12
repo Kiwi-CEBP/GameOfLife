@@ -66,12 +66,12 @@ public abstract class Animal implements Runnable{
     }
 
     private boolean move(){
-        System.out.println(animal_index+" move");
         List<Cell> emptyCells = getListOfEmptyNeighbours();
         for (Cell c : emptyCells) {
             if (c.occupyCell(this)){
                 occupiedCell = c;
                 neighbourCells = occupiedCell.getNeighbours();
+                System.out.println(animal_index+" move "+c.getCoordinates());
                 return true;
             }
         }
@@ -90,7 +90,6 @@ public abstract class Animal implements Runnable{
     }
 
     private void eat(){
-        System.out.println(animal_index+" eat");
         if(occupiedCell.giveFood()) {
             timeUntilStarve = TIME_UNTIL_STARVE_TO_DEATH;
             timeFull = TIME_TO_REMAIN_FULL;
@@ -99,6 +98,7 @@ public abstract class Animal implements Runnable{
             if(growth>= MIN_GROWTH_UNTIL_REPRODUCE) {
                 lookingForPartner = true;
             }
+            System.out.println(animal_index+" eat");
         }
     }
 
@@ -112,8 +112,8 @@ public abstract class Animal implements Runnable{
     }
 
     private void die(){
-        System.out.println(animal_index+" die");
         int foodToPlace = ThreadLocalRandom.current().nextInt(MIN_FOOD_TO_PLACE, MAX_FOOD_TO_PLACE + 1);
+        int totalFood = foodToPlace;
 
         occupiedCell.placeFood();
 
@@ -123,6 +123,7 @@ public abstract class Animal implements Runnable{
             if(entry.getValue().placeFood())
                 foodToPlace--;
         }
+        System.out.println(animal_index+" die => food"+(totalFood-foodToPlace));
         occupiedCell.freeCell();
         universe.removeAnimal(this);
     }
