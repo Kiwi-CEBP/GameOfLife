@@ -23,7 +23,7 @@ public class AnimalSexual extends Animal{
         try {
             boolean success = false;
             repSem.acquire();
-            if (this.isLookingForPartner()) {
+            if (this.lookingForPartner) {
                 success = findPartnerAndMate();
             }
 
