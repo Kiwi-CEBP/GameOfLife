@@ -1,15 +1,17 @@
 package animal;
 
 import cell.Cell;
+import creator.Creator;
 import universe.Universe;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class Animal {
+public abstract class Animal implements Runnable{
 
     private static final int TIME_UNTIL_STARVE_TO_DEATH = 10;
     private static final int TIME_TO_REMAIN_FULL = 4;
@@ -19,12 +21,14 @@ public abstract class Animal {
 
     protected Universe universe;
     private Cell occupiedCell;
-    protected Map<List<Integer>,Cell> neighbourCells;
+    protected Map<Point,Cell> neighbourCells;
     private int timeUntilStarve = TIME_UNTIL_STARVE_TO_DEATH;
     private int timeFull = TIME_TO_REMAIN_FULL;
     protected int growth = 0;
     protected boolean lookingForPartner = false;
     private boolean alive = true;
+
+    protected String animal_index;
 
     public Animal(Universe universe, Cell cell) {
         this.universe = universe;
@@ -32,11 +36,22 @@ public abstract class Animal {
         cell.occupyCell(this);
         neighbourCells =  occupiedCell.getNeighbours();
     }
+    @Override
+    public void run() {
+        System.out.println(animal_index+" alive");
+        live();
+    }
 
-    public void live(){
+    private void live(){
         while(alive) {
             timeFull--;
+            try {
+                Creator.semaphore.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             move();
+            Creator.semaphore.release();
             eat();
             if (timeFull <= 0)
                 timeUntilStarve--;
@@ -47,11 +62,11 @@ public abstract class Animal {
                 alive = false;
             }
         }
-
         die();
     }
 
     private boolean move(){
+        System.out.println(animal_index+" move");
         List<Cell> emptyCells = getListOfEmptyNeighbours();
         for (Cell c : emptyCells) {
             if (c.occupyCell(this)){
@@ -65,9 +80,9 @@ public abstract class Animal {
 
     protected List<Cell> getListOfEmptyNeighbours(){
         List<Cell> emptyCell = new ArrayList<Cell>();
-        Iterator<Map.Entry<List<Integer>,Cell>> itr = neighbourCells.entrySet().iterator();
+        Iterator<Map.Entry<Point,Cell>> itr = neighbourCells.entrySet().iterator();
         while(itr.hasNext()) {
-            Map.Entry<List<Integer>,Cell> entry = itr.next();
+            Map.Entry<Point,Cell> entry = itr.next();
             if(entry.getValue().isEmpty())
                 emptyCell.add(entry.getValue());
         }
@@ -75,6 +90,7 @@ public abstract class Animal {
     }
 
     private void eat(){
+        System.out.println(animal_index+" eat");
         if(occupiedCell.giveFood()) {
             timeUntilStarve = TIME_UNTIL_STARVE_TO_DEATH;
             timeFull = TIME_TO_REMAIN_FULL;
@@ -87,6 +103,7 @@ public abstract class Animal {
     }
 
     public boolean reproduce(){
+        System.out.println(animal_index+" reproduce");
         return false;
     }
 
@@ -95,19 +112,18 @@ public abstract class Animal {
     }
 
     private void die(){
+        System.out.println(animal_index+" die");
         int foodToPlace = ThreadLocalRandom.current().nextInt(MIN_FOOD_TO_PLACE, MAX_FOOD_TO_PLACE + 1);
 
         occupiedCell.placeFood();
 
-        Iterator<Map.Entry<List<Integer>,Cell>> itr = neighbourCells.entrySet().iterator();
+        Iterator<Map.Entry<Point,Cell>> itr = neighbourCells.entrySet().iterator();
         while(itr.hasNext() && foodToPlace > 0) {
-            Map.Entry<List<Integer>,Cell> entry = itr.next();
+            Map.Entry<Point,Cell> entry = itr.next();
             if(entry.getValue().placeFood())
                 foodToPlace--;
         }
         occupiedCell.freeCell();
         universe.removeAnimal(this);
     }
-
-
 }

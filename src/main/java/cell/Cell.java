@@ -2,12 +2,11 @@ package cell;
 import animal.*;
 
 import java.awt.*;
-import java.util.List;
 import java.util.Map;
 
 public class Cell {
     private Point coordinates;
-    private Map<List<Integer>,Cell> neighbours;
+    private Map<Point,Cell> neighbours;
     private Animal presentAnimal;
     private boolean food;
     private boolean occupied;
@@ -19,7 +18,7 @@ public class Cell {
         occupied = false;
     }
 
-    public void setNeighbours(Map<List<Integer>,Cell> neighbours){
+    public void setNeighbours(Map<Point,Cell> neighbours){
         this.neighbours = neighbours;
     }
 
@@ -39,7 +38,7 @@ public class Cell {
         return false;
     }
 
-    public Map<List<Integer>,Cell> getNeighbours(){
+    public Map<Point,Cell> getNeighbours(){
         return neighbours;
     }
 

@@ -2,11 +2,16 @@ package universe;
 
 import animal.Animal;
 import cell.Cell;
+import creator.Creator;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Universe {
-    private Map<List<Integer>, Cell> cells = new HashMap<>();
+    private Map<Point, Cell> cells = new HashMap<>();
     private List<Animal> animals = new ArrayList<>();
     private int maxTurns = 100;
 
@@ -17,7 +22,7 @@ public class Universe {
         this.maxTurns = maxTurns;
     }
 
-    public void setCells (Map<List<Integer>, Cell> cells) {
+    public void setCells (Map<Point, Cell> cells) {
         this.cells = cells;
     }
 
@@ -26,23 +31,21 @@ public class Universe {
     }
 
     public void playTheGame() {
-        while((animals.size() > 0) && (maxTurns > 0)) {
-            for (Animal animal : animals) {
-                animal.live();
-            }
-            maxTurns--;
+        for (Animal a: animals) {
+            Creator.service.execute(a);
         }
     }
 
     public void addAnimal (Animal animal) {
         animals.add(animal);
+        Creator.service.execute(animal);
     }
 
     public void removeAnimal (Animal animal) {
         animals.remove(animal);
     }
 
-    public Map<List<Integer>, Cell> getCells() {
+    public Map<Point, Cell> getCells() {
         return cells;
     }
 

@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 
 public class UniverseTest {
 
-    @Ignore
+    /*@Ignore
     @Test
     public void testPlayTheGame() {
         Universe universe = new Universe ();
@@ -29,7 +29,6 @@ public class UniverseTest {
             verify(animal, atLeast(1)).live();
         }
     }
-
 
     //================================= TEST UTILS =================================//
 
@@ -48,5 +47,5 @@ public class UniverseTest {
         }
 
         return mockAnimalList;
-    }
+    }*/
 }

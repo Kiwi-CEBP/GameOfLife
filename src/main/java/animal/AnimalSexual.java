@@ -1,8 +1,10 @@
 package animal;
 
 import cell.Cell;
+import creator.Creator;
 import universe.Universe;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,11 +13,12 @@ import java.util.Map;
 public class AnimalSexual extends Animal{
     public AnimalSexual(Universe universe, Cell cell) {
         super(universe, cell);
+        animal_index = "S"+ Creator.animal_count++;
     }
 
-    public boolean reproduce(){
+    /*public boolean reproduce(){
         return findPartnerAndMate();
-    }
+    }*/
 
     public boolean isLookingForPartner(){
         if(super.isLookingForPartner()){
@@ -42,9 +45,9 @@ public class AnimalSexual extends Animal{
 
     private List<AnimalSexual> getListOfAnimalNeighbors(){
         List<AnimalSexual> animalList = new ArrayList<AnimalSexual>();
-        Iterator<Map.Entry<List<Integer>,Cell>> itr = neighbourCells.entrySet().iterator();
+        Iterator<Map.Entry<Point,Cell>> itr = neighbourCells.entrySet().iterator();
         while(itr.hasNext()) {
-            Map.Entry<List<Integer>,Cell> entry = itr.next();
+            Map.Entry<Point,Cell> entry = itr.next();
             if(!entry.getValue().isEmpty())
                 if(entry.getValue().getPresentAnimal() instanceof AnimalSexual)
                     animalList.add((AnimalSexual) entry.getValue().getPresentAnimal());

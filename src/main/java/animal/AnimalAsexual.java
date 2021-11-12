@@ -1,6 +1,7 @@
 package animal;
 
 import cell.Cell;
+import creator.Creator;
 import universe.Universe;
 
 import java.util.List;
@@ -8,9 +9,11 @@ import java.util.List;
 public class AnimalAsexual extends Animal{
     public AnimalAsexual(Universe universe, Cell cell) {
         super(universe, cell);
+        animal_index = "A"+Creator.animal_count++;
     }
 
     public boolean reproduce(){
+        System.out.println(animal_index+" reproduce");
         AnimalAsexual child = giveBirth();
         if (child != null)
             return true;
