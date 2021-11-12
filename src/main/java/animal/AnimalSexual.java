@@ -9,16 +9,33 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 public class AnimalSexual extends Animal{
+    Semaphore repSem = new Semaphore(1);
+
     public AnimalSexual(Universe universe, Cell cell) {
         super(universe, cell);
         animal_index = "S"+ Creator.animal_count++;
     }
 
-//    public boolean reproduce(){
-//        return findPartnerAndMate();
-//    }
+    public boolean reproduce(){
+        try {
+            boolean success = false;
+            repSem.acquire();
+            if (this.isLookingForPartner()) {
+                success = findPartnerAndMate();
+            }
+
+            repSem.release();
+            return success;
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            repSem.release();
+            return false;
+        }
+    }
 
     @Override
     public boolean isLookingForPartner(){
