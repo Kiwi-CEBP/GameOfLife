@@ -12,6 +12,7 @@ public class AnimalAsexual extends Animal{
         animal_index = "A"+Creator.animal_count++;
     }
 
+    @Override
     public boolean reproduce(){
         System.out.println(animal_index+" reproduce");
         AnimalAsexual child = giveBirth();
@@ -20,6 +21,7 @@ public class AnimalAsexual extends Animal{
         return false;
     }
 
+    @Override
     public boolean isLookingForPartner(){
         return false;
     }

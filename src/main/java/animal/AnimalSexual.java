@@ -16,10 +16,11 @@ public class AnimalSexual extends Animal{
         animal_index = "S"+ Creator.animal_count++;
     }
 
-    /*public boolean reproduce(){
-        return findPartnerAndMate();
-    }*/
+//    public boolean reproduce(){
+//        return findPartnerAndMate();
+//    }
 
+    @Override
     public boolean isLookingForPartner(){
         if(super.isLookingForPartner()){
             giveBirth();
