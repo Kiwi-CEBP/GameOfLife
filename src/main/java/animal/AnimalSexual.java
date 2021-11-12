@@ -39,11 +39,21 @@ public class AnimalSexual extends Animal{
 
     @Override
     public boolean isLookingForPartner(){
-        if(super.isLookingForPartner()){
-            giveBirth();
-            return true;
+        try {
+            boolean mated = false;
+            repSem.acquire();
+            if (super.isLookingForPartner()) {
+                giveBirth();
+                mated = true;
+            }
+            repSem.release();
+            return mated;
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            repSem.release();
+            return false;
         }
-        return false;
     }
 
     private AnimalSexual giveBirth(){
@@ -77,7 +87,6 @@ public class AnimalSexual extends Animal{
         List<AnimalSexual> animals = getListOfAnimalNeighbors();
         for (AnimalSexual a : animals) {
             if (a.isLookingForPartner()){
-                a.reproduce();
                 AnimalSexual child = giveBirth();
                 if (child != null)
                     return true;
