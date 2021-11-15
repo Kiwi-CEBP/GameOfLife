@@ -19,7 +19,7 @@ public abstract class Animal implements Runnable{
     private static final int MIN_FOOD_TO_PLACE = 1;
 
     protected Universe universe;
-    private Cell occupiedCell;
+    protected Cell occupiedCell;
     private int timeUntilStarve = TIME_UNTIL_STARVE_TO_DEATH;
     private int timeFull = TIME_TO_REMAIN_FULL;
     protected int growth = 0;
@@ -44,11 +44,11 @@ public abstract class Animal implements Runnable{
             timeFull--;
             try {
                 Creator.semaphore.acquire();
+                move();
+                Creator.semaphore.release();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            move();
-            Creator.semaphore.release();
             eat();
             if (timeFull <= 0)
                 timeUntilStarve--;
@@ -63,9 +63,12 @@ public abstract class Animal implements Runnable{
     }
 
     private boolean move(){
+        Cell currentCell = this.occupiedCell;
         List<Cell> emptyCells = getListOfEmptyNeighbours();
+
         for (Cell c : emptyCells) {
             if (c.occupyCell(this)){
+                currentCell.freeCell();
                 occupiedCell = c;
                 System.out.println(animal_index+" move "+c.getCoordinates());
                 return true;

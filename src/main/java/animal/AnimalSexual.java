@@ -72,14 +72,16 @@ public class AnimalSexual extends Animal{
     }
 
     private List<AnimalSexual> getListOfAnimalNeighbors(){
-        List<AnimalSexual> animalList = new ArrayList<AnimalSexual>();
-        Iterator<Map.Entry<Point,Cell>> itr = neighbourCells.entrySet().iterator();
-        while(itr.hasNext()) {
-            Map.Entry<Point,Cell> entry = itr.next();
-            if(!entry.getValue().isEmpty())
-                if(entry.getValue().getPresentAnimal() instanceof AnimalSexual)
-                    animalList.add((AnimalSexual) entry.getValue().getPresentAnimal());
+        List<AnimalSexual> animalList = new ArrayList<>();
+        System.out.println(animal_index + " on cell " + this.occupiedCell.getCoordinates().toString() + " has neighbours on:");
+        for (Cell cell : getListOfNeighbours()) {
+            if (!cell.isEmpty())
+                if (cell.getPresentAnimal() instanceof AnimalSexual) {
+                    System.out.println(animal_index + ": " + cell.getCoordinates().toString());
+                    animalList.add((AnimalSexual) cell.getPresentAnimal());
+                }
         }
+
         return animalList;
     }
 
