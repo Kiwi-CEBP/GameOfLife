@@ -4,7 +4,6 @@ import cell.Cell;
 import creator.Creator;
 import universe.Universe;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -85,7 +84,7 @@ public abstract class Animal implements Runnable{
     }
 
     protected List<Cell> getListOfEmptyNeighbours(){
-        List<Cell> emptyCell = new ArrayList<Cell>();
+        List<Cell> emptyCell = new ArrayList<>();
 
         for (Cell neighbourCell : getListOfNeighbours()) {
             if(neighbourCell.isEmpty())
@@ -130,7 +129,7 @@ public abstract class Animal implements Runnable{
             if(cell.placeFood())
                 foodToPlace--;
         }
-        System.out.println(animal_index+" die => food "+(totalFood-foodToPlace));
+        System.out.println(animal_index+" die => food " + (totalFood - foodToPlace));
         occupiedCell.freeCell();
         universe.removeAnimal(this);
     }
