@@ -34,7 +34,7 @@ public abstract class Animal implements Runnable{
     }
     @Override
     public void run() {
-        System.out.println(animal_index+" alive");
+        System.out.println(animal_index+" alive at " + occupiedCell.getCoordinates().toString());
         live();
     }
 
@@ -45,6 +45,7 @@ public abstract class Animal implements Runnable{
             attemptMove();
 
             eat();
+
             if (timeFull <= 0)
                 timeUntilStarve--;
 
@@ -75,7 +76,7 @@ public abstract class Animal implements Runnable{
             if (c.occupyCell(this)){
                 currentCell.freeCell();
                 occupiedCell = c;
-                System.out.println(animal_index+" move "+c.getCoordinates());
+                System.out.println(animal_index + " move " + c.getCoordinates());
                 return true;
             }
         }
