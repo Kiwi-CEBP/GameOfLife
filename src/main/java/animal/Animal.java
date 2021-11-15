@@ -114,11 +114,14 @@ public abstract class Animal implements Runnable{
         int totalFood = foodToPlace;
 
         occupiedCell.placeFood();
+        List<Cell> neighbours = new ArrayList<>();
+        occupiedCell.getNeighbours().forEach((point, cell) -> neighbours.add(cell));
 
-        Iterator<Map.Entry<Point,Cell>> itr = occupiedCell.getNeighbours().entrySet().iterator();
-        while(itr.hasNext() && foodToPlace > 0) {
-            Map.Entry<Point,Cell> entry = itr.next();
-            if(entry.getValue().placeFood())
+        for (Cell cell : neighbours) {
+            if (foodToPlace <= 0)
+                break;
+
+            if(cell.placeFood())
                 foodToPlace--;
         }
         System.out.println(animal_index+" die => food "+(totalFood-foodToPlace));
