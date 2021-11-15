@@ -124,7 +124,7 @@ public abstract class Animal implements Runnable{
             if(entry.getValue().placeFood())
                 foodToPlace--;
         }
-        System.out.println(animal_index+" die => food"+(totalFood-foodToPlace));
+        System.out.println(animal_index+" die => food "+(totalFood-foodToPlace));
         occupiedCell.freeCell();
         universe.removeAnimal(this);
     }
