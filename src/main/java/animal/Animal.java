@@ -13,6 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Animal implements Runnable{
 
+    //TODO Move these to a utils.Config class
     private static final int TIME_UNTIL_STARVE_TO_DEATH = 10;
     private static final int TIME_TO_REMAIN_FULL = 4;
     private static final int MIN_GROWTH_UNTIL_REPRODUCE = 10;
@@ -55,9 +56,9 @@ public abstract class Animal implements Runnable{
             eat();
             if (timeFull <= 0)
                 timeUntilStarve--;
-            if (growth >= MIN_GROWTH_UNTIL_REPRODUCE) {
-                reproduce();
-            }
+
+            reproduce();
+
             if (timeUntilStarve == 0) {
                 alive = false;
             }
