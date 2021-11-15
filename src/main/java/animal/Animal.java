@@ -5,10 +5,8 @@ import creator.Creator;
 import universe.Universe;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Animal implements Runnable{
@@ -22,7 +20,6 @@ public abstract class Animal implements Runnable{
 
     protected Universe universe;
     private Cell occupiedCell;
-    protected Map<Point,Cell> neighbourCells;
     private int timeUntilStarve = TIME_UNTIL_STARVE_TO_DEATH;
     private int timeFull = TIME_TO_REMAIN_FULL;
     protected int growth = 0;
@@ -35,7 +32,6 @@ public abstract class Animal implements Runnable{
         this.universe = universe;
         occupiedCell = cell;
         cell.occupyCell(this);
-        neighbourCells =  occupiedCell.getNeighbours();
     }
     @Override
     public void run() {
@@ -71,7 +67,6 @@ public abstract class Animal implements Runnable{
         for (Cell c : emptyCells) {
             if (c.occupyCell(this)){
                 occupiedCell = c;
-                neighbourCells = occupiedCell.getNeighbours();
                 System.out.println(animal_index+" move "+c.getCoordinates());
                 return true;
             }
@@ -81,12 +76,14 @@ public abstract class Animal implements Runnable{
 
     protected List<Cell> getListOfEmptyNeighbours(){
         List<Cell> emptyCell = new ArrayList<Cell>();
-        Iterator<Map.Entry<Point,Cell>> itr = neighbourCells.entrySet().iterator();
-        while(itr.hasNext()) {
-            Map.Entry<Point,Cell> entry = itr.next();
-            if(entry.getValue().isEmpty())
-                emptyCell.add(entry.getValue());
+        List<Cell> neighbourCells = new ArrayList<>();
+        occupiedCell.getNeighbours().forEach((point, cell) -> neighbourCells.add(cell));
+
+        for (Cell neighbourCell : neighbourCells) {
+            if(neighbourCell.isEmpty())
+                emptyCell.add(neighbourCell);
         }
+
         return emptyCell;
     }
 
@@ -118,7 +115,7 @@ public abstract class Animal implements Runnable{
 
         occupiedCell.placeFood();
 
-        Iterator<Map.Entry<Point,Cell>> itr = neighbourCells.entrySet().iterator();
+        Iterator<Map.Entry<Point,Cell>> itr = occupiedCell.getNeighbours().entrySet().iterator();
         while(itr.hasNext() && foodToPlace > 0) {
             Map.Entry<Point,Cell> entry = itr.next();
             if(entry.getValue().placeFood())

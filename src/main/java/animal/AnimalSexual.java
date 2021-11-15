@@ -23,11 +23,11 @@ public class AnimalSexual extends Animal{
         try {
             boolean success = false;
             repSem.acquire();
-            //System.out.println(animal_index + " is looking to reproduce");
             if (this.isLookingForPartner()) {
+                System.out.println(animal_index + " is looking to reproduce");
                 success = findPartnerAndMate();
+                System.out.println(animal_index + " is no longer reproducing");
             }
-
             repSem.release();
             return success;
 
@@ -86,8 +86,9 @@ public class AnimalSexual extends Animal{
     private boolean findPartnerAndMate(){
         List<AnimalSexual> animals = getListOfAnimalNeighbors();
         for (AnimalSexual a : animals) {
-            //System.out.println(this.animal_index + " found suitable partner " + a.animal_index);
+            System.out.println(this.animal_index + " found suitable partner " + a.animal_index);
             if (a.tryReproduction()){
+                System.out.println(this.animal_index + " reproduced with " + a.animal_index);
                 AnimalSexual child = giveBirth();
                 if (child != null)
                     return true;
