@@ -18,10 +18,6 @@ public class Universe {
     public Universe() {
     }
 
-    public Universe(int maxTurns) {
-        this.maxTurns = maxTurns;
-    }
-
     public void setCells (Map<Point, Cell> cells) {
         this.cells = cells;
     }
