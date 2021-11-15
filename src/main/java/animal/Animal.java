@@ -74,12 +74,17 @@ public abstract class Animal implements Runnable{
         return false;
     }
 
-    protected List<Cell> getListOfEmptyNeighbours(){
-        List<Cell> emptyCell = new ArrayList<Cell>();
+    protected List<Cell> getListOfNeighbours() {
         List<Cell> neighbourCells = new ArrayList<>();
         occupiedCell.getNeighbours().forEach((point, cell) -> neighbourCells.add(cell));
 
-        for (Cell neighbourCell : neighbourCells) {
+        return neighbourCells;
+    }
+
+    protected List<Cell> getListOfEmptyNeighbours(){
+        List<Cell> emptyCell = new ArrayList<Cell>();
+
+        for (Cell neighbourCell : getListOfNeighbours()) {
             if(neighbourCell.isEmpty())
                 emptyCell.add(neighbourCell);
         }
@@ -114,10 +119,8 @@ public abstract class Animal implements Runnable{
         int totalFood = foodToPlace;
 
         occupiedCell.placeFood();
-        List<Cell> neighbours = new ArrayList<>();
-        occupiedCell.getNeighbours().forEach((point, cell) -> neighbours.add(cell));
 
-        for (Cell cell : neighbours) {
+        for (Cell cell : getListOfNeighbours()) {
             if (foodToPlace <= 0)
                 break;
 
