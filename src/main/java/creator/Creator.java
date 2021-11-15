@@ -18,8 +18,8 @@ public class Creator {
     private final static int NUMBER_OF_THREADS = 20;
     public final int MAP_HEIGHT = 10;
     public final int MAP_WIDTH = 10;
-    public final int INITIAL_FOOD_NUMBER = 8;
-    public final int INITIAL_ANIMAL_NUMBER = 8;
+    public final int INITIAL_FOOD_NUMBER = 10000;
+    public final int INITIAL_ANIMAL_NUMBER = 3;
     Universe universe = new Universe();
     private Map<Point, Cell> cells = new HashMap<>();
     private List<Animal> animals = new ArrayList<>();
@@ -97,7 +97,7 @@ public class Creator {
         for(int i=0; i<INITIAL_ANIMAL_NUMBER; i++) {
             Cell c = cells.get(new Point(rand.nextInt(MAP_HEIGHT), rand.nextInt(MAP_WIDTH)));
             Animal a;
-            if(Math.random() < 0.5){
+            if(Math.random() > 1){
                 a =new AnimalAsexual(universe, c);
             } else {
                 a = new AnimalSexual(universe, c);
