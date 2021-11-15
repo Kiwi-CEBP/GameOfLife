@@ -71,6 +71,7 @@ public abstract class Animal implements Runnable{
     private boolean move(){
         Cell currentCell = this.occupiedCell;
         List<Cell> emptyCells = getListOfEmptyNeighbours();
+        Collections.shuffle(emptyCells);
 
         for (Cell c : emptyCells) {
             if (c.occupyCell(this)){

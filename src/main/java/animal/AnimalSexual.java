@@ -51,8 +51,7 @@ public class AnimalSexual extends Animal{
             return didReproduce;
 
         } catch (InterruptedException e) {
-            //e.printStackTrace();
-            System.out.println(animal_index + " was already trying to reproduce");
+            e.printStackTrace();
             repSem.release();
             return false;
         }
@@ -75,7 +74,7 @@ public class AnimalSexual extends Animal{
 
     private List<AnimalSexual> getListOfAnimalNeighbors(){
         List<AnimalSexual> animalList = new ArrayList<>();
-        //System.out.println(animal_index + " on cell " + this.occupiedCell.getCoordinates().toString() + " has neighbours on:");
+        System.out.println(animal_index + " on cell " + this.occupiedCell.getCoordinates().toString() + " has neighbours on:");
         for (Cell cell : getListOfNeighbours()) {
             if (!cell.isEmpty())
                 if (cell.getPresentAnimal() instanceof AnimalSexual) {
