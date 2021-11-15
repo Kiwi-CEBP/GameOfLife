@@ -39,12 +39,13 @@ public class AnimalSexual extends Animal{
     public boolean tryReproduction(){
         try {
             boolean didReproduce = false;
-            reproductionSemaphore.tryAcquire(5, TimeUnit.MILLISECONDS);
-            if (this.isLookingForPartner()) {
-                giveBirth();
-                didReproduce = true;
+            if(reproductionSemaphore.tryAcquire(50, TimeUnit.MICROSECONDS)) {
+                if (this.isLookingForPartner()) {
+                    giveBirth();
+                    didReproduce = true;
+                }
+                reproductionSemaphore.release();
             }
-            reproductionSemaphore.release();
             return didReproduce;
 
         } catch (InterruptedException e) {
@@ -75,7 +76,7 @@ public class AnimalSexual extends Animal{
         for (Cell cell : getListOfNeighbours()) {
             if (!cell.isEmpty())
                 if (cell.getPresentAnimal() instanceof AnimalSexual) {
-                    System.out.println(animal_index + ": " + cell.getCoordinates().toString());
+                    System.out.println("\t" + animal_index + " neighbour: " + cell.getCoordinates().toString());
                     animalList.add((AnimalSexual) cell.getPresentAnimal());
                 }
         }
