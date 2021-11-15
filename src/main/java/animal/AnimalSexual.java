@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class AnimalSexual extends Animal{
     Semaphore repSem = new Semaphore(1);
@@ -41,7 +42,7 @@ public class AnimalSexual extends Animal{
     public boolean tryReproduction(){
         try {
             boolean didReproduce = false;
-            repSem.acquire();
+            repSem.tryAcquire(5, TimeUnit.MILLISECONDS);
             if (this.isLookingForPartner()) {
                 giveBirth();
                 didReproduce = true;
@@ -50,7 +51,8 @@ public class AnimalSexual extends Animal{
             return didReproduce;
 
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println(animal_index + " was already trying to reproduce");
             repSem.release();
             return false;
         }
@@ -73,7 +75,7 @@ public class AnimalSexual extends Animal{
 
     private List<AnimalSexual> getListOfAnimalNeighbors(){
         List<AnimalSexual> animalList = new ArrayList<>();
-        System.out.println(animal_index + " on cell " + this.occupiedCell.getCoordinates().toString() + " has neighbours on:");
+        //System.out.println(animal_index + " on cell " + this.occupiedCell.getCoordinates().toString() + " has neighbours on:");
         for (Cell cell : getListOfNeighbours()) {
             if (!cell.isEmpty())
                 if (cell.getPresentAnimal() instanceof AnimalSexual) {

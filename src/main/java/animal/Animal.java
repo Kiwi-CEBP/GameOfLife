@@ -43,7 +43,8 @@ public abstract class Animal implements Runnable{
             timeFull--;
             try {
                 Creator.semaphore.acquire();
-                move();
+                System.out.println(animal_index + " is attempting to move");
+                System.out.println(animal_index + " moved: " + move());
                 Creator.semaphore.release();
             } catch (InterruptedException e) {
                 e.printStackTrace();
