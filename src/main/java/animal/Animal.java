@@ -4,15 +4,13 @@ import cell.Cell;
 import creator.Creator;
 import universe.Universe;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Animal implements Runnable{
 
+    //TODO Move these to a utils.Config class
     private static final int TIME_UNTIL_STARVE_TO_DEATH = 10;
     private static final int TIME_TO_REMAIN_FULL = 4;
     private static final int MIN_GROWTH_UNTIL_REPRODUCE = 10;
@@ -20,8 +18,7 @@ public abstract class Animal implements Runnable{
     private static final int MIN_FOOD_TO_PLACE = 1;
 
     protected Universe universe;
-    private Cell occupiedCell;
-    protected Map<Point,Cell> neighbourCells;
+    protected Cell occupiedCell;
     private int timeUntilStarve = TIME_UNTIL_STARVE_TO_DEATH;
     private int timeFull = TIME_TO_REMAIN_FULL;
     protected int growth = 0;
@@ -34,30 +31,26 @@ public abstract class Animal implements Runnable{
         this.universe = universe;
         occupiedCell = cell;
         cell.occupyCell(this);
-        neighbourCells =  occupiedCell.getNeighbours();
     }
     @Override
     public void run() {
-        System.out.println(animal_index+" alive");
+        System.out.println(animal_index+" alive at " + occupiedCell.getCoordinates().toString());
         live();
     }
 
     private void live(){
         while(alive) {
             timeFull--;
-            try {
-                Creator.semaphore.acquire();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            move();
-            Creator.semaphore.release();
+
+            attemptMove();
+
             eat();
+
             if (timeFull <= 0)
                 timeUntilStarve--;
-            if (growth >= MIN_GROWTH_UNTIL_REPRODUCE) {
-                reproduce();
-            }
+
+            reproduce();
+
             if (timeUntilStarve == 0) {
                 alive = false;
             }
@@ -65,27 +58,47 @@ public abstract class Animal implements Runnable{
         die();
     }
 
+    private void attemptMove() {
+        try {
+            Creator.semaphore.acquire();
+            move();
+            Creator.semaphore.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private boolean move(){
+        Cell currentCell = this.occupiedCell;
         List<Cell> emptyCells = getListOfEmptyNeighbours();
+        Collections.shuffle(emptyCells);
+
         for (Cell c : emptyCells) {
             if (c.occupyCell(this)){
+                currentCell.freeCell();
                 occupiedCell = c;
-                neighbourCells = occupiedCell.getNeighbours();
-                System.out.println(animal_index+" move "+c.getCoordinates());
+                System.out.println(animal_index + " move " + c.getCoordinates());
                 return true;
             }
         }
         return false;
     }
 
+    protected List<Cell> getListOfNeighbours() {
+        List<Cell> neighbourCells = new ArrayList<>();
+        occupiedCell.getNeighbours().forEach((point, cell) -> neighbourCells.add(cell));
+
+        return neighbourCells;
+    }
+
     protected List<Cell> getListOfEmptyNeighbours(){
-        List<Cell> emptyCell = new ArrayList<Cell>();
-        Iterator<Map.Entry<Point,Cell>> itr = neighbourCells.entrySet().iterator();
-        while(itr.hasNext()) {
-            Map.Entry<Point,Cell> entry = itr.next();
-            if(entry.getValue().isEmpty())
-                emptyCell.add(entry.getValue());
+        List<Cell> emptyCell = new ArrayList<>();
+
+        for (Cell neighbourCell : getListOfNeighbours()) {
+            if(neighbourCell.isEmpty())
+                emptyCell.add(neighbourCell);
         }
+
         return emptyCell;
     }
 
@@ -117,13 +130,14 @@ public abstract class Animal implements Runnable{
 
         occupiedCell.placeFood();
 
-        Iterator<Map.Entry<Point,Cell>> itr = neighbourCells.entrySet().iterator();
-        while(itr.hasNext() && foodToPlace > 0) {
-            Map.Entry<Point,Cell> entry = itr.next();
-            if(entry.getValue().placeFood())
+        for (Cell cell : getListOfNeighbours()) {
+            if (foodToPlace <= 0)
+                break;
+
+            if(cell.placeFood())
                 foodToPlace--;
         }
-        System.out.println(animal_index+" die => food"+(totalFood-foodToPlace));
+        System.out.println(animal_index+" die => food " + (totalFood - foodToPlace));
         occupiedCell.freeCell();
         universe.removeAnimal(this);
     }

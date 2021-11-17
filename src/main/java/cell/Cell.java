@@ -65,5 +65,6 @@ public class Cell {
 
     public void freeCell(){
         presentAnimal = null;
+        occupied = false;
     }
 }
