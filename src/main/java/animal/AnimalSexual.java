@@ -15,7 +15,7 @@ public class AnimalSexual extends Animal{
 
     public AnimalSexual(Universe universe, Cell cell) {
         super(universe, cell);
-        animal_index = Thread.currentThread().getId() + " S " + Creator.animal_count++;
+        animal_index = "S " + Creator.animal_count++;
     }
 
     public boolean reproduce(){
@@ -25,7 +25,7 @@ public class AnimalSexual extends Animal{
             if (this.isLookingForPartner()) {
                 System.out.println(animal_index + " is looking to reproduce");
                 success = findPartnerAndMate();
-                System.out.println(animal_index + " is no longer looking for mate");
+                System.out.println(animal_index + " is no longer reproducing");
             }
             reproductionSemaphore.release();
 
@@ -42,8 +42,9 @@ public class AnimalSexual extends Animal{
     private void waitForMate(boolean didReproduce) {
         if(this.isLookingForPartner() && !didReproduce) {
             try {
-                System.out.println(animal_index + " is waiting for mate 100 milliseconds");
-                Thread.sleep(100);
+                int waitTime = getRandWaitTime();
+                System.out.println(animal_index + " is waiting for mate " + waitTime + " milliseconds");
+                Thread.sleep(waitTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -53,9 +54,12 @@ public class AnimalSexual extends Animal{
     private boolean tryReproduction(){
         try {
             boolean didReproduce = false;
-            if(reproductionSemaphore.tryAcquire(getRandWaitTime(), TimeUnit.MILLISECONDS)) {
+            System.out.println("ACQUIRE SEMAPHORE FOR ANIMAL " + animal_index);
+            if(reproductionSemaphore.tryAcquire(2, TimeUnit.MILLISECONDS)) {
                 if (this.isLookingForPartner()) {
+                    System.out.println("GIVING BIRTH");
                     giveBirth();
+                    System.out.println("GAVE BIRTH");
                     didReproduce = true;
                 }
                 reproductionSemaphore.release();
@@ -87,10 +91,12 @@ public class AnimalSexual extends Animal{
     private List<AnimalSexual> getListOfAnimalNeighbors(){
         List<AnimalSexual> animalList = new ArrayList<>();
         for (Cell cell : getListOfNeighbours()) {
-            if (!cell.isEmpty())
-                if (cell.getPresentAnimal() instanceof AnimalSexual) {
-                    System.out.println("\t" + animal_index + " has neighbour on: " + cell.getCoordinates().toString());
-                    animalList.add((AnimalSexual) cell.getPresentAnimal());
+            Animal neighbourAnimal = cell.getPresentAnimal();
+            if (neighbourAnimal != null)
+                if (neighbourAnimal instanceof AnimalSexual) {
+                    System.out.print("\t" + animal_index + " has neighbour on: " + cell.getCoordinates().toString());
+                    System.out.println(" " + neighbourAnimal.animal_index);
+                    animalList.add((AnimalSexual)  neighbourAnimal);
                 }
         }
 
@@ -112,6 +118,6 @@ public class AnimalSexual extends Animal{
     }
 
     private int getRandWaitTime() {
-        return new Random().nextInt(75) + 25;
+        return new Random().nextInt(10) + 3;
     }
 }

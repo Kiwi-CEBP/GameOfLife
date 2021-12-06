@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class Creator {
     public static int animal_count = 0;
@@ -20,6 +21,7 @@ public class Creator {
     public final int MAP_WIDTH = 10;
     public final int INITIAL_FOOD_NUMBER = 10000;
     public final int INITIAL_ANIMAL_NUMBER = 3;
+    public static final int GAME_TIME_SECONDS = 5;
     Universe universe = new Universe();
     private Map<Point, Cell> cells = new HashMap<>();
     private List<Animal> animals = new ArrayList<>();
@@ -33,8 +35,11 @@ public class Creator {
         universe.setCells(cells);
         createAnimals();
         universe.setAnimals(animals);
+    }
+
+    public void startGame(){
         universe.playTheGame();
-        service.shutdown();
+        waitForEndGame();
     }
 
     private void createCells() {
@@ -92,6 +97,15 @@ public class Creator {
                 a = new AnimalSexual(universe, c);
             }
             animals.add(a);
+        }
+    }
+
+    public static void waitForEndGame() {
+        try{
+            service.awaitTermination(GAME_TIME_SECONDS, TimeUnit.SECONDS);
+            service.shutdownNow();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

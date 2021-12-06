@@ -46,6 +46,7 @@ public class Cell {
         return coordinates;
     }
 
+    //TODO Acquire semaphore when checking animal
     public Animal getPresentAnimal(){
         return presentAnimal;
     }

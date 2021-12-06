@@ -34,6 +34,7 @@ public abstract class Animal implements Runnable{
     }
     @Override
     public void run() {
+        this.animal_index += " " + Thread.currentThread().getName();
         System.out.println(animal_index+" alive at " + occupiedCell.getCoordinates().toString());
         live();
     }
@@ -140,5 +141,7 @@ public abstract class Animal implements Runnable{
         System.out.println(animal_index+" die => food " + (totalFood - foodToPlace));
         occupiedCell.freeCell();
         universe.removeAnimal(this);
+
+        Thread.currentThread().interrupt();
     }
 }
