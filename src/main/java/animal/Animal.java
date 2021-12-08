@@ -50,7 +50,9 @@ public abstract class Animal implements Runnable{
             if (timeFull <= 0)
                 timeUntilStarve--;
 
-            reproduce();
+            if (this.isLookingForPartner()) {
+                reproduce();
+            }
 
             if (timeUntilStarve == 0) {
                 alive = false;

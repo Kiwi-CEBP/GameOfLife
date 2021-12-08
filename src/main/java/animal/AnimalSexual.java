@@ -19,24 +19,13 @@ public class AnimalSexual extends Animal{
     }
 
     public boolean reproduce(){
-        try {
-            boolean success = false;
-            reproductionSemaphore.acquire();
-            if (this.isLookingForPartner()) {
-                System.out.println(animal_index + " is looking to reproduce");
-                success = findPartnerAndMate();
-                System.out.println(animal_index + " is no longer reproducing");
-            }
-            reproductionSemaphore.release();
+        boolean success = false;
+        System.out.println(animal_index + " is looking to reproduce");
+        success = findPartnerAndMate();
+        System.out.println(animal_index + " is no longer reproducing");
 
-            waitForMate(success);
-            return success;
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            reproductionSemaphore.release();
-            return false;
-        }
+        waitForMate(success);
+        return success;
     }
 
     private void waitForMate(boolean didReproduce) {
