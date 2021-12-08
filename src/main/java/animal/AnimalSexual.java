@@ -14,7 +14,7 @@ public class AnimalSexual extends Animal{
 
     public AnimalSexual(Universe universe, Cell cell) {
         super(universe, cell);
-        animalIndex = "S " + Creator.animal_count++;
+        animalIndex = "" + Creator.animal_count++;
     }
 
     public boolean reproduce(){
@@ -58,6 +58,7 @@ public class AnimalSexual extends Animal{
         }
 
         if (okPartner1 && okPartner2) {
+            System.out.println(this.animalIndex + " Animals " + this.animalIndex + " and " + partner.animalIndex + " mated!!!");
             this.giveBirth();
             partner.giveBirth();
             return true;
@@ -77,16 +78,16 @@ public class AnimalSexual extends Animal{
         try {
             boolean enteredMating = false;
             animal.reproductionSemaphore.acquire();
-            System.out.println("Acquired semaphore for animal " + animal.animalIndex);
+            System.out.println(this.animalIndex + "    Acquired semaphore for animal " + animal.animalIndex);
 
             if (animal.isLookingForPartner()) {
-                System.out.println("Animal entered mating " + animal.animalIndex);
+                System.out.println(this.animalIndex + "    Animal entered mating " + animal.animalIndex);
                 enteredMating = true;
                 animal.lookingForPartner = false;
             }
 
             animal.reproductionSemaphore.release();
-            System.out.println("Released semaphore for animal " + animal.animalIndex);
+            System.out.println(this.animalIndex + "    Released semaphore for animal " + animal.animalIndex);
             return enteredMating;
         } catch (Exception e) {
             e.printStackTrace();
