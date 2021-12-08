@@ -9,12 +9,12 @@ import java.util.List;
 public class AnimalAsexual extends Animal{
     public AnimalAsexual(Universe universe, Cell cell) {
         super(universe, cell);
-        animal_index = "A"+Creator.animal_count++;
+        animalIndex = "A"+Creator.animal_count++;
     }
 
     @Override
     public boolean reproduce(){
-        System.out.println(animal_index+" reproduce");
+        System.out.println(animalIndex +" reproduce");
         AnimalAsexual child = giveBirth();
         if (child != null)
             return true;

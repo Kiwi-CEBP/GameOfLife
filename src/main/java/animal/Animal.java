@@ -25,7 +25,7 @@ public abstract class Animal implements Runnable{
     protected boolean lookingForPartner = false;
     private boolean alive = true;
 
-    protected String animal_index;
+    protected String animalIndex;
 
     public Animal(Universe universe, Cell cell) {
         this.universe = universe;
@@ -34,8 +34,8 @@ public abstract class Animal implements Runnable{
     }
     @Override
     public void run() {
-        this.animal_index += " " + Thread.currentThread().getName();
-        System.out.println(animal_index+" alive at " + occupiedCell.getCoordinates().toString());
+        this.animalIndex += " " + Thread.currentThread().getName();
+        System.out.println(animalIndex +" alive at " + occupiedCell.getCoordinates().toString());
         live();
     }
 
@@ -47,8 +47,9 @@ public abstract class Animal implements Runnable{
 
             eat();
 
-            if (timeFull <= 0)
+            if (timeFull <= 0) {
                 timeUntilStarve--;
+            }
 
             if (this.isLookingForPartner()) {
                 reproduce();
@@ -80,7 +81,7 @@ public abstract class Animal implements Runnable{
             if (c.occupyCell(this)){
                 currentCell.freeCell();
                 occupiedCell = c;
-                System.out.println(animal_index + " move " + c.getCoordinates());
+                System.out.println(animalIndex + " move " + c.getCoordinates());
                 return true;
             }
         }
@@ -114,12 +115,12 @@ public abstract class Animal implements Runnable{
             if(growth>= MIN_GROWTH_UNTIL_REPRODUCE) {
                 lookingForPartner = true;
             }
-            System.out.println(animal_index+" eat");
+            System.out.println(animalIndex +" eat");
         }
     }
 
     public boolean reproduce(){
-        System.out.println(animal_index+" reproduce");
+        System.out.println(animalIndex +" reproduce");
         return false;
     }
 
@@ -140,7 +141,7 @@ public abstract class Animal implements Runnable{
             if(cell.placeFood())
                 foodToPlace--;
         }
-        System.out.println(animal_index+" die => food " + (totalFood - foodToPlace));
+        System.out.println(animalIndex +" die => food " + (totalFood - foodToPlace));
         occupiedCell.freeCell();
         universe.removeAnimal(this);
 
