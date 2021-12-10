@@ -21,6 +21,7 @@ public class Creator {
     public final int MAP_WIDTH = 10;
     public final int INITIAL_FOOD_NUMBER = 10000;
     public final int INITIAL_ANIMAL_NUMBER = 3;
+    public final double SEXUAL_ANIMAL_RATIO = 0.75;
     public static final int GAME_TIME_SECONDS = 5;
     Universe universe = new Universe();
     private Map<Point, Cell> cells = new HashMap<>();
@@ -91,7 +92,7 @@ public class Creator {
         for(int i=0; i<INITIAL_ANIMAL_NUMBER; i++) {
             Cell c = cells.get(new Point(rand.nextInt(MAP_HEIGHT), rand.nextInt(MAP_WIDTH)));
             Animal a;
-            if(Math.random() > 1){
+            if(Math.random() > SEXUAL_ANIMAL_RATIO){
                 a =new AnimalAsexual(universe, c);
             } else {
                 a = new AnimalSexual(universe, c);

@@ -14,7 +14,7 @@ public class AnimalSexual extends Animal{
 
     public AnimalSexual(Universe universe, Cell cell) {
         super(universe, cell);
-        animalIndex = "" + Creator.animal_count++;
+        animalIndex = "S " + Creator.animal_count++;
     }
 
     public boolean reproduce(){
@@ -113,8 +113,8 @@ public class AnimalSexual extends Animal{
 
         List<Cell> emptyCell = getListOfEmptyNeighbours();
         for(Cell cell : emptyCell){
-            if (cell.occupyCell(this)){
-                AnimalSexual newAnimal = new AnimalSexual(universe, cell);
+            AnimalSexual newAnimal = new AnimalSexual(universe, cell);
+            if (cell.occupyCell(newAnimal)){
                 universe.addAnimal(newAnimal);
                 return newAnimal;
             }

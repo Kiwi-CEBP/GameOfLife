@@ -53,7 +53,7 @@ public class Cell {
 
     public boolean occupyCell(Animal animal){
         if(occupied){
-            return false;
+            return presentAnimal.equals(animal);
         }
         occupied = true;
         presentAnimal = animal;

@@ -50,7 +50,7 @@ public abstract class Animal implements Runnable{
                 timeUntilStarve--;
             }
 
-            if (this.isLookingForPartner()) {
+            if (this.isLookingForPartner() || (this instanceof AnimalAsexual && growth >= MIN_GROWTH_UNTIL_REPRODUCE)) {
                 reproduce();
             }
 
@@ -80,7 +80,7 @@ public abstract class Animal implements Runnable{
             if (c.occupyCell(this)){
                 currentCell.freeCell();
                 occupiedCell = c;
-                System.out.println(animalIndex + " move " + c.getCoordinates());
+                System.out.println(animalIndex + " move " + "[" + c.getCoordinates().x + "," + c.getCoordinates().y + "]" );
                 return true;
             }
         }
