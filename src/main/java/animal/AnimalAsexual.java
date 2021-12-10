@@ -29,7 +29,7 @@ public class AnimalAsexual extends Animal{
         List<Cell> emptyCell = getListOfEmptyNeighbours();
         for(Cell cell : emptyCell){
             AnimalAsexual newAnimal = new AnimalAsexual(universe, cell);
-            if (cell.occupyCell(newAnimal)){
+            if (cell.getPresentAnimal() == newAnimal){
                 universe.addAnimal(newAnimal);
                 return newAnimal;
             }

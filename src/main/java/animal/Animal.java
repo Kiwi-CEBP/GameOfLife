@@ -34,7 +34,7 @@ public abstract class Animal implements Runnable{
     }
     @Override
     public void run() {
-        System.out.println(animalIndex +" alive at " + occupiedCell.getCoordinates().toString());
+        System.out.println(animalIndex +" alive at " + "[" + occupiedCell.getCoordinates().x + "," + occupiedCell.getCoordinates().y + "]");
         live();
     }
 
