@@ -12,6 +12,7 @@ import java.util.concurrent.Semaphore;
 
 public class AnimalSexual extends Animal{
     Semaphore reproductionSemaphore = new Semaphore(1);
+    String mateIndex = "";
 
     public AnimalSexual(Universe universe, Cell cell) {
         super(universe, cell);
@@ -27,7 +28,8 @@ public class AnimalSexual extends Animal{
             if(this.isLookingForPartner().equals(ReproductionState.TRUE)) {
                 System.out.println("Attempted mating between " + this.animalIndex + " and " + partners.get(i).animalIndex);
                 attemptMating(partners.get(i));
-            }else if(this.isLookingForPartner().equals(ReproductionState.WAIT)) {
+            }
+            else if(this.isLookingForPartner().equals(ReproductionState.WAIT)){
                 partners.add(partners.get(i));
             }
         }
@@ -51,43 +53,43 @@ public class AnimalSexual extends Animal{
     }
 
     private boolean attemptMating(AnimalSexual partner) {
-        boolean okPartner1 = false;
-        boolean okPartner2 = false;
+        boolean okPartner1;
+        boolean okPartner2;
 
-        okPartner1 = this.enterMating(partner);
-        if (!okPartner1) {
+        okPartner1 = this.enterMating(partner, this);
+        if (!okPartner1 || !this.mateIndex.equals(partner.animalIndex)) {
             return false;
         }
-        okPartner2 = partner.enterMating(this);
-        if (!okPartner2) {
+        okPartner2 = this.enterMating(this, partner);
+        if (!okPartner2 || !partner.mateIndex.equals(this.animalIndex)) {
             this.lookingForPartner = ReproductionState.TRUE;
             return false;
         }
-        if (okPartner1 && okPartner2) {
-            System.out.println(this.animalIndex + " Animals " + this.animalIndex + " and " + partner.animalIndex + " mated!!!");
-            this.giveBirth();
-            partner.giveBirth();
-            return true;
-        }
-
-        return false;
+        System.out.println(this.animalIndex + " Animals " + this.animalIndex + " and " + partner.animalIndex + " mated!!!");
+        this.giveBirth();
+        partner.giveBirth();
+        return true;
     }
 
 
-    private boolean enterMating(AnimalSexual animal) {
+    private boolean enterMating(AnimalSexual animal, AnimalSexual mate) {
         try {
             boolean enteredMating = false;
             animal.reproductionSemaphore.acquire();
             System.out.println(this.animalIndex + "    Acquired semaphore for animal " + animal.animalIndex);
 
             if (animal.isLookingForPartner().equals(ReproductionState.TRUE)) {
-                System.out.println(animal.animalIndex + "    Animal entered mating " + this.animalIndex);
+                System.out.println(animal.animalIndex + "    Animal entered mating " + mate.animalIndex);
                 enteredMating = true;
+                animal.mateIndex = mate.animalIndex;
                 animal.lookingForPartner = ReproductionState.WAIT;
+            } else if(animal.isLookingForPartner().equals(ReproductionState.WAIT)) {
+                enteredMating = true;
             }
 
             animal.reproductionSemaphore.release();
             System.out.println(this.animalIndex + "    Released semaphore for animal " + animal.animalIndex);
+
             return enteredMating;
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,8 +110,10 @@ public class AnimalSexual extends Animal{
     }
 
     private AnimalSexual giveBirth(){
+        if(!this.isLookingForPartner().equals(ReproductionState.WAIT)){
+            return null;
+        }
         growth = 0;
-
         List<Cell> emptyCell = getListOfEmptyNeighbours();
         for(Cell cell : emptyCell){
             AnimalSexual newAnimal = new AnimalSexual(universe, cell);
@@ -119,6 +123,8 @@ public class AnimalSexual extends Animal{
                 return newAnimal;
             }
         }
+        System.out.println(animalIndex + " no place to place baby");
+        lookingForPartner = ReproductionState.TRUE;
         return null;
     }
 
