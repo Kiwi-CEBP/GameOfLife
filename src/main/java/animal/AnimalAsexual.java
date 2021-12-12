@@ -20,8 +20,8 @@ public class AnimalAsexual extends Animal{
     }
 
     @Override
-    public boolean isLookingForPartner(){
-        return false;
+    public ReproductionState isLookingForPartner(){
+        return ReproductionState.FALSE;
     }
 
     private AnimalAsexual giveBirth(){

@@ -8,6 +8,12 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+enum ReproductionState {
+    TRUE,
+    FALSE,
+    WAIT
+}
+
 public abstract class Animal implements Runnable{
 
     //TODO Move these to a utils.Config class
@@ -22,7 +28,7 @@ public abstract class Animal implements Runnable{
     private int timeUntilStarve = TIME_UNTIL_STARVE_TO_DEATH;
     private int timeFull = TIME_TO_REMAIN_FULL;
     protected int growth = 0;
-    protected boolean lookingForPartner = false;
+    protected ReproductionState lookingForPartner = ReproductionState.FALSE;
     private boolean alive = true;
 
     protected String animalIndex;
@@ -30,6 +36,7 @@ public abstract class Animal implements Runnable{
     public Animal(Universe universe, Cell cell) {
         this.universe = universe;
         occupiedCell = cell;
+        System.out.println(animalIndex +" animal created " + "[" + occupiedCell.getCoordinates().x + "," + occupiedCell.getCoordinates().y + "]");
         cell.occupyCell(this);
     }
     @Override
@@ -50,7 +57,7 @@ public abstract class Animal implements Runnable{
                 timeUntilStarve--;
             }
 
-            if (this.isLookingForPartner() || (this instanceof AnimalAsexual && growth >= MIN_GROWTH_UNTIL_REPRODUCE)) {
+            if (this.isLookingForPartner().equals(ReproductionState.TRUE) || (this instanceof AnimalAsexual && growth >= MIN_GROWTH_UNTIL_REPRODUCE)) {
                 reproduce();
             }
 
@@ -80,7 +87,7 @@ public abstract class Animal implements Runnable{
             if (c.occupyCell(this)){
                 currentCell.freeCell();
                 occupiedCell = c;
-                System.out.println(animalIndex + " move " + "[" + c.getCoordinates().x + "," + c.getCoordinates().y + "]" );
+                //System.out.println(animalIndex + " move " + "[" + c.getCoordinates().x + "," + c.getCoordinates().y + "]" );
                 return true;
             }
         }
@@ -112,7 +119,7 @@ public abstract class Animal implements Runnable{
             growth++;
 
             if(growth>= MIN_GROWTH_UNTIL_REPRODUCE) {
-                lookingForPartner = true;
+                lookingForPartner = ReproductionState.TRUE;
             }
             System.out.println(animalIndex +" eat");
         }
@@ -123,7 +130,7 @@ public abstract class Animal implements Runnable{
         return false;
     }
 
-    public boolean isLookingForPartner(){
+    public ReproductionState isLookingForPartner(){
         return lookingForPartner;
     }
 
