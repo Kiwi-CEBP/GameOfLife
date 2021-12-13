@@ -57,11 +57,11 @@ public class AnimalSexual extends Animal{
         boolean okPartner2;
 
         okPartner1 = this.enterMating(partner, this);
-        if (!okPartner1 || !this.mateIndex.equals(partner.animalIndex)) {
+        if (!okPartner1 || !partner.mateIndex.equals(this.animalIndex)) {
             return false;
         }
         okPartner2 = this.enterMating(this, partner);
-        if (!okPartner2 || !partner.mateIndex.equals(this.animalIndex)) {
+        if (!okPartner2 || !this.mateIndex.equals(partner.animalIndex)) {
             this.lookingForPartner = ReproductionState.TRUE;
             return false;
         }

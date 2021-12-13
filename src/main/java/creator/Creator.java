@@ -21,7 +21,7 @@ public class Creator {
     public final int MAP_WIDTH = 10;
     public final int INITIAL_FOOD_NUMBER = 10000;
     public final int INITIAL_ANIMAL_NUMBER = 3;
-    public final double SEXUAL_ANIMAL_RATIO = 0.75;
+    public final double SEXUAL_ANIMAL_RATIO = 1;
     public static final int GAME_TIME_SECONDS = 5;
     Universe universe = new Universe();
     private Map<Point, Cell> cells = new HashMap<>();
