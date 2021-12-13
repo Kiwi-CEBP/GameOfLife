@@ -16,12 +16,12 @@ import java.util.concurrent.TimeUnit;
 
 public class Creator {
     public static int animal_count = 0;
-    private final static int NUMBER_OF_THREADS = 20;
-    public final int MAP_HEIGHT = 10;
-    public final int MAP_WIDTH = 10;
+    private final static int NUMBER_OF_THREADS = 100;
+    public final int MAP_HEIGHT = 100;
+    public final int MAP_WIDTH = 100;
     public final int INITIAL_FOOD_NUMBER = 10000;
-    public final int INITIAL_ANIMAL_NUMBER = 3;
-    public final double SEXUAL_ANIMAL_RATIO = 1;
+    public final int INITIAL_ANIMAL_NUMBER = 50;
+    public final double SEXUAL_ANIMAL_RATIO = 0.99;
     public static final int GAME_TIME_SECONDS = 5;
     Universe universe = new Universe();
     private Map<Point, Cell> cells = new HashMap<>();
