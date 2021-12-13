@@ -21,19 +21,19 @@ public class AnimalSexual extends Animal{
 
     public boolean reproduce(){
         boolean success = false;
-        System.out.println(animalIndex + " is looking to reproduce on "+ "[" + occupiedCell.getCoordinates().x + "," + occupiedCell.getCoordinates().y + "]");
+        //System.out.println(animalIndex + " is looking to reproduce on "+ "[" + occupiedCell.getCoordinates().x + "," + occupiedCell.getCoordinates().y + "]");
 
         List<AnimalSexual> partners = findPartners();
         for (int i = 0; i < partners.size(); i++) {
             if(this.isLookingForPartner().equals(ReproductionState.TRUE)) {
-                System.out.println("Attempted mating between " + this.animalIndex + " and " + partners.get(i).animalIndex);
+                //System.out.println("Attempted mating between " + this.animalIndex + " and " + partners.get(i).animalIndex);
                 attemptMating(partners.get(i));
             }
             else if(this.isLookingForPartner().equals(ReproductionState.WAIT)){
                 partners.add(partners.get(i));
             }
         }
-        System.out.println(animalIndex + " is no longer reproducing on "+ "[" + occupiedCell.getCoordinates().x + "," + occupiedCell.getCoordinates().y + "]");
+        //System.out.println(animalIndex + " is no longer reproducing on "+ "[" + occupiedCell.getCoordinates().x + "," + occupiedCell.getCoordinates().y + "]");
 
         waitForMate(success);
         return success;
@@ -43,7 +43,7 @@ public class AnimalSexual extends Animal{
         List<AnimalSexual> neighbours = getListOfSexualAnimalNeighbors();
         List<AnimalSexual> partners = new ArrayList<>();
         for (AnimalSexual neighbour : neighbours) {
-            System.out.println(this.animalIndex + " found neighbour " + neighbour.animalIndex);
+            //System.out.println(this.animalIndex + " found neighbour " + neighbour.animalIndex);
             if (neighbour.isLookingForPartner().equals(ReproductionState.TRUE)){
                 partners.add(neighbour);
             }
@@ -62,7 +62,7 @@ public class AnimalSexual extends Animal{
         }
         okPartner2 = this.enterMating(this, partner);
         if (!okPartner2 || !this.mateIndex.equals(partner.animalIndex)) {
-            this.lookingForPartner = ReproductionState.TRUE;
+            partner.lookingForPartner = ReproductionState.TRUE;
             return false;
         }
         System.out.println(this.animalIndex + " Animals " + this.animalIndex + " and " + partner.animalIndex + " mated!!!");
@@ -76,10 +76,10 @@ public class AnimalSexual extends Animal{
         try {
             boolean enteredMating = false;
             animal.reproductionSemaphore.acquire();
-            System.out.println(this.animalIndex + "    Acquired semaphore for animal " + animal.animalIndex);
+            //System.out.println(this.animalIndex + "    Acquired semaphore for animal " + animal.animalIndex);
 
             if (animal.isLookingForPartner().equals(ReproductionState.TRUE)) {
-                System.out.println(animal.animalIndex + "    Animal entered mating " + mate.animalIndex);
+                //System.out.println(animal.animalIndex + "    Animal entered mating " + mate.animalIndex);
                 enteredMating = true;
                 animal.mateIndex = mate.animalIndex;
                 animal.lookingForPartner = ReproductionState.WAIT;
@@ -88,7 +88,7 @@ public class AnimalSexual extends Animal{
             }
 
             animal.reproductionSemaphore.release();
-            System.out.println(this.animalIndex + "    Released semaphore for animal " + animal.animalIndex);
+            //System.out.println(this.animalIndex + "    Released semaphore for animal " + animal.animalIndex);
 
             return enteredMating;
         } catch (Exception e) {
@@ -134,9 +134,9 @@ public class AnimalSexual extends Animal{
             Animal neighbourAnimal = cell.getPresentAnimal();
             if (neighbourAnimal != null)
                 if (neighbourAnimal instanceof AnimalSexual) {
-                    System.out.println("\t" + animalIndex + " has neighbour on: " +
-                            "[" + cell.getCoordinates().x + "," + cell.getCoordinates().y + "]" +
-                            " " + neighbourAnimal.animalIndex);
+//                    System.out.println("\t" + animalIndex + " has neighbour on: " +
+//                            "[" + cell.getCoordinates().x + "," + cell.getCoordinates().y + "]" +
+//                            " " + neighbourAnimal.animalIndex);
                     animalList.add((AnimalSexual)  neighbourAnimal);
                 }
         }

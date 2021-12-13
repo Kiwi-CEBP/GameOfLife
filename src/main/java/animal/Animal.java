@@ -36,7 +36,6 @@ public abstract class Animal implements Runnable{
     public Animal(Universe universe, Cell cell) {
         this.universe = universe;
         occupiedCell = cell;
-        System.out.println(animalIndex +" animal created " + "[" + occupiedCell.getCoordinates().x + "," + occupiedCell.getCoordinates().y + "]");
         cell.occupyCell(this);
     }
     @Override
@@ -87,7 +86,7 @@ public abstract class Animal implements Runnable{
             if (c.occupyCell(this)){
                 currentCell.freeCell();
                 occupiedCell = c;
-                //System.out.println(animalIndex + " move " + "[" + c.getCoordinates().x + "," + c.getCoordinates().y + "]" );
+                System.out.println(animalIndex + " move " + "[" + c.getCoordinates().x + "," + c.getCoordinates().y + "]" );
                 return true;
             }
         }
