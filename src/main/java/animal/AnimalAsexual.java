@@ -9,28 +9,27 @@ import java.util.List;
 public class AnimalAsexual extends Animal{
     public AnimalAsexual(Universe universe, Cell cell) {
         super(universe, cell);
-        animal_index = "A"+Creator.animal_count++;
+        animalIndex = "A " + Creator.animal_count++;
     }
 
     @Override
     public boolean reproduce(){
-        System.out.println(animal_index+" reproduce");
+        System.out.println(animalIndex + " reproduce");
         AnimalAsexual child = giveBirth();
-        if (child != null)
-            return true;
-        return false;
+        return child != null;
     }
 
     @Override
-    public boolean isLookingForPartner(){
-        return false;
+    public ReproductionState isLookingForPartner(){
+        return ReproductionState.FALSE;
     }
 
     private AnimalAsexual giveBirth(){
+        growth = 0;
         List<Cell> emptyCell = getListOfEmptyNeighbours();
-        for(Cell c : emptyCell){
-            if (c.occupyCell(this)){
-                AnimalAsexual newAnimal = new AnimalAsexual(universe, c);
+        for(Cell cell : emptyCell){
+            AnimalAsexual newAnimal = new AnimalAsexual(universe, cell);
+            if (cell.getPresentAnimal() == newAnimal){
                 universe.addAnimal(newAnimal);
                 return newAnimal;
             }

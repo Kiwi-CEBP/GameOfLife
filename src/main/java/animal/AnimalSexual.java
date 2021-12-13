@@ -8,110 +8,143 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+
 
 public class AnimalSexual extends Animal{
     Semaphore reproductionSemaphore = new Semaphore(1);
+    String mateIndex = "";
 
     public AnimalSexual(Universe universe, Cell cell) {
         super(universe, cell);
-        animal_index = Thread.currentThread().getId() + " S " + Creator.animal_count++;
+        animalIndex = "S " + Creator.animal_count++;
     }
 
     public boolean reproduce(){
-        try {
-            boolean success = false;
-            reproductionSemaphore.acquire();
-            if (this.isLookingForPartner()) {
-                System.out.println(animal_index + " is looking to reproduce");
-                success = findPartnerAndMate();
-                System.out.println(animal_index + " is no longer looking for mate");
+        boolean success = false;
+        //System.out.println(animalIndex + " is looking to reproduce on "+ "[" + occupiedCell.getCoordinates().x + "," + occupiedCell.getCoordinates().y + "]");
+
+        List<AnimalSexual> partners = findPartners();
+        for (int i = 0; i < partners.size(); i++) {
+            if(this.isLookingForPartner().equals(ReproductionState.TRUE)) {
+                //System.out.println("Attempted mating between " + this.animalIndex + " and " + partners.get(i).animalIndex);
+                attemptMating(partners.get(i));
             }
-            reproductionSemaphore.release();
+            else if(this.isLookingForPartner().equals(ReproductionState.WAIT)){
+                partners.add(partners.get(i));
+            }
+        }
+        //System.out.println(animalIndex + " is no longer reproducing on "+ "[" + occupiedCell.getCoordinates().x + "," + occupiedCell.getCoordinates().y + "]");
 
-            waitForMate(success);
-            return success;
+        waitForMate(success);
+        return success;
+    }
 
-        } catch (InterruptedException e) {
+    private List<AnimalSexual> findPartners() {
+        List<AnimalSexual> neighbours = getListOfSexualAnimalNeighbors();
+        List<AnimalSexual> partners = new ArrayList<>();
+        for (AnimalSexual neighbour : neighbours) {
+            //System.out.println(this.animalIndex + " found neighbour " + neighbour.animalIndex);
+            if (neighbour.isLookingForPartner().equals(ReproductionState.TRUE)){
+                partners.add(neighbour);
+            }
+        }
+
+        return partners;
+    }
+
+    private boolean attemptMating(AnimalSexual partner) {
+        boolean okPartner1;
+        boolean okPartner2;
+
+        okPartner1 = this.enterMating(partner, this);
+        if (!okPartner1 || !partner.mateIndex.equals(this.animalIndex)) {
+            return false;
+        }
+        okPartner2 = this.enterMating(this, partner);
+        if (!okPartner2 || !this.mateIndex.equals(partner.animalIndex)) {
+            partner.lookingForPartner = ReproductionState.TRUE;
+            return false;
+        }
+        System.out.println(this.animalIndex + " Animals " + this.animalIndex + " and " + partner.animalIndex + " mated!!!");
+        this.giveBirth();
+        partner.giveBirth();
+        return true;
+    }
+
+
+    private boolean enterMating(AnimalSexual animal, AnimalSexual mate) {
+        try {
+            boolean enteredMating = false;
+            animal.reproductionSemaphore.acquire();
+            //System.out.println(this.animalIndex + "    Acquired semaphore for animal " + animal.animalIndex);
+
+            if (animal.isLookingForPartner().equals(ReproductionState.TRUE)) {
+                //System.out.println(animal.animalIndex + "    Animal entered mating " + mate.animalIndex);
+                enteredMating = true;
+                animal.mateIndex = mate.animalIndex;
+                animal.lookingForPartner = ReproductionState.WAIT;
+            } else if(animal.isLookingForPartner().equals(ReproductionState.WAIT)) {
+                enteredMating = true;
+            }
+
+            animal.reproductionSemaphore.release();
+            //System.out.println(this.animalIndex + "    Released semaphore for animal " + animal.animalIndex);
+
+            return enteredMating;
+        } catch (Exception e) {
             e.printStackTrace();
-            reproductionSemaphore.release();
             return false;
         }
     }
 
     private void waitForMate(boolean didReproduce) {
-        if(this.isLookingForPartner() && !didReproduce) {
+        if(!didReproduce) {
             try {
-                System.out.println(animal_index + " is waiting for mate 100 milliseconds");
-                Thread.sleep(100);
+                int waitTime = getRandWaitTime();
+                System.out.println(animalIndex + " is waiting for mate " + waitTime + " milliseconds");
+                Thread.sleep(waitTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private boolean tryReproduction(){
-        try {
-            boolean didReproduce = false;
-            if(reproductionSemaphore.tryAcquire(getRandWaitTime(), TimeUnit.MILLISECONDS)) {
-                if (this.isLookingForPartner()) {
-                    giveBirth();
-                    didReproduce = true;
-                }
-                reproductionSemaphore.release();
-            }
-            return didReproduce;
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            reproductionSemaphore.release();
-            return false;
-        }
-    }
-
     private AnimalSexual giveBirth(){
+        if(!this.isLookingForPartner().equals(ReproductionState.WAIT)){
+            return null;
+        }
         growth = 0;
-        lookingForPartner = false;
-
         List<Cell> emptyCell = getListOfEmptyNeighbours();
         for(Cell cell : emptyCell){
-            if (cell.occupyCell(this)){
-                AnimalSexual newAnimal = new AnimalSexual(universe, cell);
+            AnimalSexual newAnimal = new AnimalSexual(universe, cell);
+            if (cell.getPresentAnimal() == newAnimal){
+                lookingForPartner = ReproductionState.FALSE;
                 universe.addAnimal(newAnimal);
                 return newAnimal;
             }
         }
+        System.out.println(animalIndex + " no place to place baby");
+        lookingForPartner = ReproductionState.TRUE;
         return null;
     }
 
-    private List<AnimalSexual> getListOfAnimalNeighbors(){
+    private List<AnimalSexual> getListOfSexualAnimalNeighbors(){
         List<AnimalSexual> animalList = new ArrayList<>();
         for (Cell cell : getListOfNeighbours()) {
-            if (!cell.isEmpty())
-                if (cell.getPresentAnimal() instanceof AnimalSexual) {
-                    System.out.println("\t" + animal_index + " has neighbour on: " + cell.getCoordinates().toString());
-                    animalList.add((AnimalSexual) cell.getPresentAnimal());
+            Animal neighbourAnimal = cell.getPresentAnimal();
+            if (neighbourAnimal != null)
+                if (neighbourAnimal instanceof AnimalSexual) {
+//                    System.out.println("\t" + animalIndex + " has neighbour on: " +
+//                            "[" + cell.getCoordinates().x + "," + cell.getCoordinates().y + "]" +
+//                            " " + neighbourAnimal.animalIndex);
+                    animalList.add((AnimalSexual)  neighbourAnimal);
                 }
         }
 
         return animalList;
     }
 
-    private boolean findPartnerAndMate(){
-        List<AnimalSexual> animals = getListOfAnimalNeighbors();
-        for (AnimalSexual a : animals) {
-            System.out.println(this.animal_index + " found suitable partner " + a.animal_index);
-            if (a.tryReproduction()){
-                System.out.println(this.animal_index + " reproduced with " + a.animal_index);
-                AnimalSexual child = giveBirth();
-                if (child != null)
-                    return true;
-            }
-        }
-        return false;
-    }
-
     private int getRandWaitTime() {
-        return new Random().nextInt(75) + 25;
+        return new Random().nextInt(10) + 3;
     }
 }

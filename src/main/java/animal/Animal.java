@@ -8,6 +8,12 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+enum ReproductionState {
+    TRUE,
+    FALSE,
+    WAIT
+}
+
 public abstract class Animal implements Runnable{
 
     //TODO Move these to a utils.Config class
@@ -22,10 +28,10 @@ public abstract class Animal implements Runnable{
     private int timeUntilStarve = TIME_UNTIL_STARVE_TO_DEATH;
     private int timeFull = TIME_TO_REMAIN_FULL;
     protected int growth = 0;
-    protected boolean lookingForPartner = false;
+    protected ReproductionState lookingForPartner = ReproductionState.FALSE;
     private boolean alive = true;
 
-    protected String animal_index;
+    protected String animalIndex;
 
     public Animal(Universe universe, Cell cell) {
         this.universe = universe;
@@ -34,7 +40,7 @@ public abstract class Animal implements Runnable{
     }
     @Override
     public void run() {
-        System.out.println(animal_index+" alive at " + occupiedCell.getCoordinates().toString());
+        System.out.println(animalIndex +" alive at " + "[" + occupiedCell.getCoordinates().x + "," + occupiedCell.getCoordinates().y + "]");
         live();
     }
 
@@ -46,10 +52,13 @@ public abstract class Animal implements Runnable{
 
             eat();
 
-            if (timeFull <= 0)
+            if (timeFull <= 0) {
                 timeUntilStarve--;
+            }
 
-            reproduce();
+            if (this.isLookingForPartner().equals(ReproductionState.TRUE) || (this instanceof AnimalAsexual && growth >= MIN_GROWTH_UNTIL_REPRODUCE)) {
+                reproduce();
+            }
 
             if (timeUntilStarve == 0) {
                 alive = false;
@@ -77,7 +86,7 @@ public abstract class Animal implements Runnable{
             if (c.occupyCell(this)){
                 currentCell.freeCell();
                 occupiedCell = c;
-                System.out.println(animal_index + " move " + c.getCoordinates());
+                System.out.println(animalIndex + " move " + "[" + c.getCoordinates().x + "," + c.getCoordinates().y + "]" );
                 return true;
             }
         }
@@ -109,18 +118,18 @@ public abstract class Animal implements Runnable{
             growth++;
 
             if(growth>= MIN_GROWTH_UNTIL_REPRODUCE) {
-                lookingForPartner = true;
+                lookingForPartner = ReproductionState.TRUE;
             }
-            System.out.println(animal_index+" eat");
+            System.out.println(animalIndex +" eat");
         }
     }
 
     public boolean reproduce(){
-        System.out.println(animal_index+" reproduce");
+        System.out.println(animalIndex +" reproduce");
         return false;
     }
 
-    public boolean isLookingForPartner(){
+    public ReproductionState isLookingForPartner(){
         return lookingForPartner;
     }
 
@@ -137,8 +146,10 @@ public abstract class Animal implements Runnable{
             if(cell.placeFood())
                 foodToPlace--;
         }
-        System.out.println(animal_index+" die => food " + (totalFood - foodToPlace));
+        System.out.println(animalIndex +" die => food " + (totalFood - foodToPlace));
         occupiedCell.freeCell();
         universe.removeAnimal(this);
+
+        Thread.currentThread().interrupt();
     }
 }
