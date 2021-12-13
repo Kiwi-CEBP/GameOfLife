@@ -3,6 +3,7 @@ import animal.*;
 
 import java.awt.*;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 public class Cell {
     private Point coordinates;
@@ -10,6 +11,7 @@ public class Cell {
     private Animal presentAnimal;
     private boolean food;
     private boolean occupied;
+    private Semaphore cellSemaphore = new Semaphore(1);
 
     public Cell(Point coordinates){
         this.coordinates = coordinates;
@@ -52,12 +54,23 @@ public class Cell {
     }
 
     public boolean occupyCell(Animal animal){
-        if(occupied){
+        try {
+            cellSemaphore.acquire();
+            if (occupied) {
+                cellSemaphore.release();
+                return false;
+            }
+
+            occupied = true;
+            presentAnimal = animal;
+
+            cellSemaphore.release();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        occupied = true;
-        presentAnimal = animal;
-        return true;
     }
 
     public boolean isEmpty(){

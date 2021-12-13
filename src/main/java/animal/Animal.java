@@ -48,7 +48,7 @@ public abstract class Animal implements Runnable{
         while(alive) {
             timeFull--;
 
-            attemptMove();
+            move();
 
             eat();
 
@@ -65,16 +65,6 @@ public abstract class Animal implements Runnable{
             }
         }
         die();
-    }
-
-    private void attemptMove() {
-        try {
-            Creator.semaphore.acquire();
-            move();
-            Creator.semaphore.release();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     private boolean move(){
